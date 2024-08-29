@@ -146,6 +146,7 @@ class PromptCompressor:
                 config=config,
                 ignore_mismatched_sizes=True,
                 **model_config,
+                cache_dir= '/NS/ssdecl/work/',
             )
         else:
             model = MODEL_CLASS.from_pretrained(
@@ -154,6 +155,7 @@ class PromptCompressor:
                 torch_dtype=model_config.pop("torch_dtype", "auto"),
                 pad_token_id=tokenizer.pad_token_id,
                 **model_config,
+                cache_dir= '/NS/ssdecl/work/',
             )
         self.tokenizer = tokenizer
         self.model = model
