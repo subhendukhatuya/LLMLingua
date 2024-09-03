@@ -104,14 +104,19 @@ Therefore, 1000 - 480 = 520 do not like to play basketball.
 The percentage of the school that do not like to play basketball is 520/1000 * 100 = 52
 The answer is 52'''
 
-llm_lingua = PromptCompressor()
+# llm_lingua = PromptCompressor()
+
+llm_lingua = PromptCompressor(
+    model_name="microsoft/llmlingua-2-xlm-roberta-large-meetingbank",
+    use_llmlingua2=True, # Whether to use llmlingua-2
+)
 
 compressed_prompt = llm_lingua.compress_prompt(
     demonstrations.split("\n\n"),
-    target_token=150,
-    force_tokens=["+", "-", "*", "×", "/", "÷", "=", "The answer is", "\n"],
-    drop_consecutive=True,
-    force_reserve_digit=True,
+    # target_token=150,
+    # force_tokens=["+", "-", "*", "×", "/", "÷", "=", "The answer is", "\n"],
+    # drop_consecutive=True,
+    # force_reserve_digit=True,
     use_context_level_filter=True,
 )
 
