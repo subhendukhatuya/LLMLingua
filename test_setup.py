@@ -17,9 +17,12 @@ for prompt in contxt:
     compressed_prompt2 = llm_lingua2.compress_prompt(
         prompt,
     )
-    
+    print(prompt)
+    print()
+    print("LLMLingua1")
     print(compressed_prompt)
     print()
+    print("LLMLingua2")
     print(compressed_prompt2)
 
 
