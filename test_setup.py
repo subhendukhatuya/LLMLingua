@@ -11,12 +11,13 @@ llm_lingua = PromptCompressor()
 
 compressed_prompt = llm_lingua.compress_prompt(
     [contxt],
-    use_context_level_filter=False
+    target_token=60
 )
 
 llm_lingua2 = PromptCompressor(
     model_name="microsoft/llmlingua-2-xlm-roberta-large-meetingbank",
     use_llmlingua2=True, # Whether to use llmlingua-2
+    target_token=60
 )
 
 compressed_prompt2 = llm_lingua2.compress_prompt(
