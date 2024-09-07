@@ -11,6 +11,7 @@ llm_lingua = PromptCompressor()
 
 compressed_prompt = llm_lingua.compress_prompt(
     [contxt],
+    use_context_level_filter=True,
     target_token=60
 )
 
