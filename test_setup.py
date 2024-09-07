@@ -10,7 +10,8 @@ Now, let’s add the numbers in parentheses: 1 + 1 + 1 + 1 + 1 + 1 = 6. So the a
 llm_lingua = PromptCompressor()
 
 compressed_prompt = llm_lingua.compress_prompt(
-    [contxt]
+    [contxt],
+    use_context_level_filter=False
 )
 
 llm_lingua2 = PromptCompressor(
