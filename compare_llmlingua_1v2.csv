@@ -1,5 +1,5 @@
-Number,LLMLingua Rate,LLMLingua2 Rate,LLMLingua Compressed Prompt,LLMLingua2 Compressed Prompt
-1,62.6%,52.1%,"Question: Angelo and Melanie to plan how many hours over the next they should study together for their test. They have 2ters of theirbook to study and 4ets toize. They figure out that they should 3 hours to each chapter of 1 hours. they to study  hours many days they study total the week they take a 10- break every hour, include 3 1ute breaks and 30 minutes forunch?
+Number,LLMLingua Rate,LLMLingua2 Rate,LLMLingua Time,LLMLingua2 Time,LLMLingua Compressed Prompt,LLMLingua2 Compressed Prompt
+1,62.6%,52.1%,3.987391710281372,0.06443667411804199,"Question: Angelo and Melanie to plan how many hours over the next they should study together for their test. They have 2ters of theirbook to study and 4ets toize. They figure out that they should 3 hours to each chapter of 1 hours. they to study  hours many days they study total the week they take a 10- break every hour, include 3 1ute breaks and 30 minutes forunch?
 Lets think step step
 anie think should each of theters,  hours2 hours total.
 For theets they to 1 hours each worksheet,  hours 4 hours
@@ -11,7 +11,7 @@ So Angelo and Melanie want to plan 12 hours to study + 3 hours of breaks = 15 ho
 They want to study no more than 4 hours each day, 15 hours / 4 hours each day = 3.75
 They will need to plan to study 4 days to allow for all the time they need.
 The answer is 4",Angelo Melanie plan hours next week study for test 2 chapters textbook 4 worksheets memorize dedicate 3 hours each chapter 1.5 hours each worksheet plan study 4 hours each day how many days study total 10-minute break every hour 3 10-minute snack breaks 30 minutes lunch? dedicate 3 hours each 2 chapters 3 x 2 chapters = 6 hours total worksheets 1.5 hours each worksheet 1.5 x 4 worksheets = 6 hours total start 12 hours study 4 hours a day 12 / 4 = 3 days include time for breaks lunch Every hour 10-minute break 12 hours x 10 minutes = 120 extra minutes breaks 3 10-minute snack breaks 3 = 30 minutes 30 minutes lunch each 120 = 180 minutes / per = 3 extra hours plan 12 hours study + 3 hours breaks = 15 hours total study 4 hours each day 15 hours / 4 hours each day = 3.75 plan study 4 days time answer 4
-2,77.4%,53.1%,"Question: Marks basketball team scores 25 2 pointers 8 pointers 10 throws.  Their opponents score double the 2 pointers but half the pointers and.  Whats the total of points scored by teams?
+2,77.4%,53.1%,0.07407712936401367,0.03668403625488281,"Question: Marks basketball team scores 25 2 pointers 8 pointers 10 throws.  Their opponents score double the 2 pointers but half the pointers and.  Whats the total of points scored by teams?
 Lets think step step
 Marks team scores5 pointers, meaning they scored 5*2=0 points in pointers.
 is team also 6 pointers, = pointers
@@ -23,7 +23,7 @@ They also scored half Mark's team's points in free throws, meaning they scored 1
 All together Mark's opponents scored 100+12+5=117 points
 The total score for the game is both team's scores added together, so it is 84+117=201 points
 The answer is 201",Mark's basketball team scores 25 2 pointers 8 3 pointers 10 free throws opponents score double half 3 pointers free throws total points scored both teams? Mark's team scores 25 2 pointers 25*2= 50 points His team scores 6 3 pointers 8*3= 24 points 10 free throws one point*1=10 points scored 50+24+10= 84 points opponents scored double 2 pointers 50*2=100 points scored half 3 pointers scored 24/2= 12 points scored half's points free throws 10/2=5 points opponents scored 100+12+5=117 points total score both scores added 84+117=201 points answer 201
-3,78.8%,54.7%,"Question: Bella has two times as many as fres. She has 20 more than deck. If sheys 2/5 times more of each item, what would be the total of the items she will have if she has 60bles?
+3,78.8%,54.7%,0.07417631149291992,0.035904884338378906,"Question: Bella has two times as many as fres. She has 20 more than deck. If sheys 2/5 times more of each item, what would be the total of the items she will have if she has 60bles?
 Lets think step step
 Whenellays5 morebles, she'll have increased the numberbles by 25*0 24
 The ofbles she have is 044
@@ -35,7 +35,7 @@ If she buys 2/5 times more deck cards, she'll have 2/5*10 = 4 more deck cards.
 The total number of deck cards she'll have is 10+4 = 14
 Together, Bella will have a total of 14+42+84 = 140 items
 The answer is 140",Bella has two times marbles frisbees 20 more than deck cards buys 2/5 times more total number 60 marbles? Bella buys 2/5 times more marbles increased 2/5*60 = 24 total 60+24 = 84 60 marbles two times 60/2 = 30 frisbees buys 2/5 times more frisbees 2/5*30 = 12 more frisbees total 30+12 = 42 20 more frisbees deck cards 30-20 = 10 deck cards buys 2/5 times more deck cards 2/5*10 = 4 more deck cards total deck 10+4 = 14 14+42+84 = 140 items answer 140
-4,75.4%,52.7%,"Question: A of 4 fruit bets contains 9les 15anges, 14anas in the first threeets and 2 less each the fourth. manyruits are there?
+4,75.4%,52.7%,0.06594562530517578,0.036432504653930664,"Question: A of 4 fruit bets contains 9les 15anges, 14anas in the first threeets and 2 less each the fourth. manyruits are there?
 Lets think step step
 For the firstets, the ofles andanges in basket is 954
 In total, together withanas, theruits in 8 for the firstets
@@ -47,7 +47,7 @@ The fourth basket also contains 14-2=12 bananas.
 In total, the fourth basket has 20+12=32 fruits.
 The four baskets together have 32+114=146 fruits.
 The answer is 146",4 fruit baskets 9 apples 15 oranges 14 bananas first three 2 less fruit fourth How many fruits? step by step first three baskets apples oranges 9+15=24 bananas fruits basket 24+14=38 three baskets each 38 fruits 3*38=114 fruits apples fourth basket 9-2=7 15-2=13 oranges fourth basket combined oranges apples fourth basket 13+7=20 fourth basket 14-2=12 bananas fourth basket 20+12=32 fruits four baskets 32+114=146 fruits answer 146
-5,77.6%,53.6%,"Question: You can buy 4les 1on for same. You bought 36ruits evenly betweenanges,leselons, and the price of 1 orange is $.0. much does1 cost if your total bill $66
+5,77.6%,53.6%,0.0745692253112793,0.03681612014770508,"Question: You can buy 4les 1on for same. You bought 36ruits evenly betweenanges,leselons, and the price of 1 orange is $.0. much does1 cost if your total bill $66
 Lets think step
 If ruits were between3 of, then I 3632 each fruit
 If orange0 then12anges $06
@@ -59,7 +59,7 @@ $60 = 48A + 12A
 $60 = 60A
 Then we know the price of one apple (A) is $60/60= $1
 The answer is 1",buy 4 apples 1 watermelon same price bought 36 fruits oranges apples watermelons 1 orange $0.50 1 apple cost total bill $66? 36 fruits bought 36/3 = 12 units each 1 orange $0.50 12 oranges $0.50 * 12 = $6 total bill $66 spent $6 oranges $66 - $6 = $60 other 2 types price watermelon W 4 apples price one apple A 1W=4A bought 12 watermelons 12 apples $60 $60 = 12W + 12A convert $60 = 12(4A) + 12A 48A + 12A 60A price one apple $60/60= $1 answer 1
-6,82.2%,51.0%,"Question: Susy goes to a large school with 800 students, while Sarah a with 30.  At the of the year,y had 100 social mediaers.  She gained 40ers in the first week of the year, half that, and half of that.  Sarah only 0ers the the year, but she gained 90ers week, a third of that and a.  After weeks, manyers did the girl with the most totalers have?
+6,82.2%,51.0%,0.08855462074279785,0.0366368293762207,"Question: Susy goes to a large school with 800 students, while Sarah a with 30.  At the of the year,y had 100 social mediaers.  She gained 40ers in the first week of the year, half that, and half of that.  Sarah only 0ers the the year, but she gained 90ers week, a third of that and a.  After weeks, manyers did the girl with the most totalers have?
 Lets think step step
 After week,y has 10+00ers.
 In the week,yains 40/2 = 20 new followers.
@@ -71,7 +71,7 @@ After the third week, Sarah gains 30/3 = 10 followers.
 So, Sarah finishes the three weeks with 140+30+10 = 180 total followers.
 Thus, Sarah is the girl with the most total followers with a total of 180.
 The answer is 180",Susy large school 800 students Sarah smaller school 300 students start school year Susy had 100 followers gained 40 first week half second half third week Sarah 50 followers gained 90 first week third second third third week After three weeks how followers girl most total? one week Susy 100+40 = 140 followers second week gains 40/2 = 20 followers third week gains 20/2 = 10 followers finishes three weeks 140+20+10 = 170 followers one week Sarah 50+90 = 140 followers second week gains 90/3 = 30 followers third week gains 30/3 = 10 followers finishes three weeks 140+30+10 = 180 total followers Sarah girl most total followers 180. answer 180
-7,75.5%,51.4%,"Question: Sam bought a dozen boxes, each 30 highl pens inside, for $10 each. He reanged five of boxes into packages of sixlters each sold $3 per. He sold the theters separately at the of three pens $. much did make in total,
+7,75.5%,51.4%,0.07213258743286133,0.03635358810424805,"Question: Sam bought a dozen boxes, each 30 highl pens inside, for $10 each. He reanged five of boxes into packages of sixlters each sold $3 per. He sold the theters separately at the of three pens $. much did make in total,
 Lets think step step
  bought boxes x00ters
 He 2 0ters
@@ -83,7 +83,7 @@ He sold each of these groups for $2 each, so made 110 * 2 = $220 from them.
 In total, then, he earned $220 + $15 = $235.
 Since his original cost was $120, he earned $235 - $120 = $115 in profit.
 The answer is 115",Sam bought dozen boxes 30 highlighter pens $10 rearranged five boxes six sold $3 per package sold rest three pens $2. profit? bought 12 boxes x $10 = $120 highlighters * 30 = 360 highlighters 5 boxes × 6 highlighters = 30 sold 5 * $3 = $15 360 - 30 = 330 highlighters 330 / 3 = 110 groups three pens sold $2 each 110 * 2 = $220 earned $220 + $15 = $235 original cost $120 earned $235 - $120 = $115 profit 115
-8,70.7%,55.4%,"Question: In a certain school, 2/ the students like to play basketball, but/ the students. What of the population of school basketball if the of the male to female students 3:2 and are 1000 students?
+8,70.7%,55.4%,0.06540584564208984,0.03631281852722168,"Question: In a certain school, 2/ the students like to play basketball, but/ the students. What of the population of school basketball if the of the male to female students 3:2 and are 1000 students?
 Lets think step step
 The students are divided into 3 25 parts where 3 parts are for parts females.
 Each part represents 10050 students
