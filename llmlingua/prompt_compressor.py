@@ -978,7 +978,7 @@ class PromptCompressor:
         use_oai_tokenizer: bool = False,
     ):
         if use_oai_tokenizer:
-            return len(self.oai_tokenizer.encode(text))
+            return len(self.oai_tokenizer.encode(text, disallowed_special=()))
         else:
             return len(
                 self.tokenizer(text, add_special_tokens=add_special_tokens).input_ids
