@@ -16,8 +16,12 @@ ds = load_dataset("lmsys/lmsys-chat-1m", cache_dir= '/NS/ssdecl/work/')
 
 print('loaded')
 
+startt = time.time()
+llm_lingua2.compress_prompt('my name is mm')
+print('LLMLingua2 first compression time: ', time.time()-startt)
+print()
 # x =1/0
-def create_message(row, content):
+def create_message(row, content, turn):
     """Create a message row based on the provided content."""
     st1 = time.time()
     compressed_prompt = llm_lingua2.compress_prompt(content,)
@@ -25,6 +29,7 @@ def create_message(row, content):
     return {
         'conversation_id': row['conversation_id'],
         'language': row['language'],
+        'turn': turn,
         'content': content,
         'compressed_prompt': compressed_prompt['compressed_prompt'],
         'time_taken': compress_time,
@@ -54,13 +59,13 @@ def process_conversation_data(initial_data):
             if i > 0:
                 combined_content = []
                 for j in range(i):
-                    combined_content.append(f"User: '{user_messages[j]}'")
+                    combined_content.append(f"{user_messages[j]}")
                     if j < len(assistant_messages):
-                        combined_content.append(f"Assistant: '{assistant_messages[j]}'")
+                        combined_content.append(f"{assistant_messages[j]}")
 
-                combined_content = '\n'.join(combined_content) + f"\nUser: '{user_messages[i]}'"
+                combined_content = '\n'.join(combined_content) + f"\n{user_messages[i]}"
 
-            processed_data.append(create_message(entry, combined_content))
+            processed_data.append(create_message(entry, combined_content, i+1))
 
     return processed_data
 
