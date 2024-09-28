@@ -54,7 +54,7 @@ def process_conversation_data(initial_data):
                 assistant_messages.append(msg['content'])
 
         for i in range(turn_count):
-            combined_content = f"User: '{user_messages[i]}'"
+            combined_content = f"{user_messages[i]}"
 
             if i > 0:
                 combined_content = []
