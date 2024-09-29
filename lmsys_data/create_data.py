@@ -76,7 +76,7 @@ processed_splits = {}
 
 for split in ds.keys():
     print(f"Processing {split} split")
-    processed_data = process_conversation_data(ds[split].select(range(5)))
+    processed_data = process_conversation_data(ds[split])
     processed_splits[split] = processed_data
 
 new_dataset_dict = DatasetDict()
@@ -87,6 +87,6 @@ for split, data in processed_splits.items():
 # Save locally or push to Hugging Face Hub
 # new_dataset_dict.save_to_disk("/content/processed_dataset_with_splits")
 # OR
-# new_dataset_dict.push_to_hub("mitramango/lmsys-processed-llmlingua2", private=True)
-df = new_dataset_dict['train'].to_pandas()  
-df.to_csv('sample_processed_lmsys_data.csv', index=False)
+new_dataset_dict.push_to_hub("mitramango/lmsys-processed-llmlingua2", private=True)
+# df = new_dataset_dict['train'].to_pandas()  
+# df.to_csv('sample_processed_lmsys_data.csv', index=False)
