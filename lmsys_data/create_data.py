@@ -59,7 +59,7 @@ def process_conversation_data(initial_data):
 
             for i in range(turn_count):
                 combined_content = f"{user_messages[i]}"
-
+                assistant_response = ''
                 if i > 0:
                     combined_content = []
                     for j in range(i):
@@ -67,7 +67,6 @@ def process_conversation_data(initial_data):
                         if j < len(assistant_messages):
                             combined_content.append(f"{assistant_messages[j]}")
 
-                    assistant_response = ''
                     if i < len(assistant_messages):
                         assistant_response = assistant_messages[i]
                     combined_content = '\n'.join(combined_content) + f"\n{user_messages[i]}"
