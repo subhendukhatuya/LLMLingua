@@ -67,10 +67,10 @@ def process_conversation_data(initial_data):
                         if j < len(assistant_messages):
                             combined_content.append(f"{assistant_messages[j]}")
 
-                    if i < len(assistant_messages):
-                        assistant_response = assistant_messages[i]
                     combined_content = '\n'.join(combined_content) + f"\n{user_messages[i]}"
 
+                if i < len(assistant_messages):
+                    assistant_response = assistant_messages[i]
 
                 processed_data.append(create_message(entry, combined_content, assistant_response, i + 1))
 
