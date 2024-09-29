@@ -22,7 +22,7 @@ llm_lingua2.compress_prompt('my name is mm')
 print('LLMLingua2 first compression time: ', time.time() - startt)
 print()
 
-def create_message(row, content, turn):
+def create_message(row, content, assistant_response, turn):
     """Create a message row based on the provided content."""
     st1 = time.time()
     compressed_prompt = llm_lingua2.compress_prompt(content)
@@ -32,6 +32,7 @@ def create_message(row, content, turn):
         'language': row['language'],
         'turn': turn,
         'content': content,
+        'assistant_response': assistant_response,
         'compressed_prompt': compressed_prompt['compressed_prompt'],
         'time_taken': compress_time,
         'origin_tokens': compressed_prompt['origin_tokens'],
@@ -66,9 +67,13 @@ def process_conversation_data(initial_data):
                         if j < len(assistant_messages):
                             combined_content.append(f"{assistant_messages[j]}")
 
+                    assistant_response = ''
+                    if i < len(assistant_messages):
+                        assistant_response = assistant_messages[i]
                     combined_content = '\n'.join(combined_content) + f"\n{user_messages[i]}"
 
-                processed_data.append(create_message(entry, combined_content, i + 1))
+
+                processed_data.append(create_message(entry, combined_content, assistant_response, i + 1))
 
         except Exception as e:
             error_log.append({
@@ -85,6 +90,27 @@ def process_conversation_data(initial_data):
 
 def convert_to_dataset(processed_data):
     return Dataset.from_dict({key: [d[key] for d in processed_data] for key in processed_data[0]})
+
+
+processed_splits = {}
+
+for split in ds.keys():
+    print(f"Processing {split} split")
+    processed_data = process_conversation_data(ds[split].select(range(5)))
+    processed_splits[split] = processed_data
+
+new_dataset_dict = DatasetDict()
+
+for split, data in processed_splits.items():
+    new_dataset_dict[split] = Dataset.from_list(data)
+
+# Save locally or push to Hugging Face Hub
+# new_dataset_dict.save_to_disk("/content/processed_dataset_with_splits")
+# OR
+# new_dataset_dict.push_to_hub("mitramango/lmsys-processed-llmlingua2", private=True)
+df = new_dataset_dict['train'].to_pandas()  
+df.to_csv('sample_processed_lmsys_data.csv', index=False)
+
 
 processed_splits = {}
 
