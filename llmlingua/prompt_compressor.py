@@ -2404,8 +2404,10 @@ class PromptCompressor:
         word_list = []
         word_label_list = []
 
-        step_start_time = time.time()  # Start time for model inference
+        # step_start_time = time.time()  # Start time for model inference
         logging.info("Starting model inference.")
+        model_inference_start_time = time.time()  # Total time for model inference
+
         with torch.no_grad():
             for batch in dataloader:
                 batch_start_time = time.time()  # Track time per batch
