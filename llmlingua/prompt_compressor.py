@@ -808,6 +808,7 @@ class PromptCompressor:
         if type(context) == str:
             context = [context]
         context = copy.deepcopy(context)
+        logging.info("Context deepcopy done!!")
 
         if len(context) == 1 and use_context_level_filter:
             use_context_level_filter = False
@@ -2431,18 +2432,28 @@ class PromptCompressor:
                 step_start_time = time.time()
 
                 for j in range(ids.shape[0]):
+                    word_start_time = time.time()
+
+                    # 4.1: Extract token probabilities and mask
+                    substep_start_time = time.time()
                     chunk_probs = probs[j, :, 1]
                     chunk_ids = ids[j]
                     chunk_mask = mask[j]
 
                     active_probs = torch.masked_select(chunk_probs, chunk_mask)
                     active_ids = torch.masked_select(chunk_ids, chunk_mask)
+                    logging.info(f"4.1 (Extract token probabilities and mask) completed in {time.time() - substep_start_time:.2f} seconds.")
 
+                    substep_start_time = time.time()
                     tokens = self.tokenizer.convert_ids_to_tokens(
                         active_ids.squeeze().tolist()
                     )
                     token_probs = [prob for prob in active_probs.cpu().numpy()]
 
+                    logging.info(f"4.2 (Convert token IDs to tokens) completed in {time.time() - substep_start_time:.2f} seconds.")
+
+                    # 4.3: Merge tokens into words
+                    substep_start_time = time.time()
                     words, valid_token_probs, _ = self.__merge_token_to_word(
                         tokens=tokens,
                         token_probs=token_probs,
@@ -2454,6 +2465,10 @@ class PromptCompressor:
                         valid_token_probs, convert_mode=token_to_word
                     )
 
+                    logging.info(f"4.4 (Convert token probs to word probs) completed in {time.time() - substep_start_time:.2f} seconds.")
+
+                    # 4.5: Handle consecutive token drops if required
+                    substep_start_time = time.time()
                     if drop_consecutive:
                         threshold = np.percentile(word_probs, int(100 * reduce_rate))
                         is_token_between = False
@@ -2468,6 +2483,11 @@ class PromptCompressor:
                             else:
                                 is_token_between |= word_prob > threshold
 
+
+                    logging.info(f"4.5 (Handle consecutive token drops) completed in {time.time() - substep_start_time:.2f} seconds.")
+
+                    # 4.6: Update word probabilities and filter words
+                    substep_start_time = time.time()
                     new_token_probs = []
                     for word, word_prob in zip(words, word_probs):
                         num_token = len(self.oai_tokenizer.encode(word))
@@ -2496,14 +2516,22 @@ class PromptCompressor:
                         else:
                             word_labels.append(0)
                     keep_str = self.tokenizer.convert_tokens_to_string(keep_words)
+                    
+                    logging.info(f"4.6 (Filter and update words based on probs) completed in {time.time() - substep_start_time:.2f} seconds.")
+
+                    # 4.7: Clean special characters (specific to XLM-R models)
+                    substep_start_time = time.time()
                     if "xlm-roberta-large" in self.model_name:
                         for i in range(len(words)):
                             words[i] = words[i].lstrip("▁")
 
+                    logging.info(f"4.7 (Clean special characters for XLM-R) completed in {time.time() - substep_start_time:.2f} seconds.")
                     compressed_chunk_list.append(keep_str)
                     word_list.append(words[:])
                     word_label_list.append(word_labels[:])
 
+                    logging.info(f"Word processing completed in {time.time() - word_start_time:.2f} seconds.")
+                
                 logging.info(f"Step 4 (Process batch results) completed in {time.time() - step_start_time:.2f} seconds.")
                 logging.info(f"Batch processed in {time.time() - batch_start_time:.2f} seconds.")
 
