@@ -7,6 +7,16 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from llmlingua import PromptCompressor
 
+llm_lingua2_small = PromptCompressor(
+    model_name="microsoft/llmlingua-2-bert-base-multilingual-cased-meetingbank",
+    use_llmlingua2=True,  # Whether to use llmlingua-2
+)
+
+llm_lingua2 = PromptCompressor(
+    model_name="microsoft/llmlingua-2-xlm-roberta-large-meetingbank",
+    use_llmlingua2=True,  # Whether to use llmlingua-2
+)
+
 import pandas as pd
 
 # Initial compression of the prompt 'my name is mm' using both models
