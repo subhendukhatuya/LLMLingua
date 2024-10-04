@@ -2408,6 +2408,8 @@ class PromptCompressor:
         logging.info("Starting model inference.")
         with torch.no_grad():
             for batch in dataloader:
+                batch_start_time = time.time()  # Track time per batch
+
                 ids = batch["ids"].to(self.device, dtype=torch.long)
                 mask = batch["mask"].to(self.device, dtype=torch.long) == 1
 
