@@ -69,7 +69,7 @@ if 'content' in df.columns and len(df) >= 7:
     print(f"7th Row (Content): Time taken by llm_lingua2: {time_taken_large:.4f} seconds")
 
     # Output compressed results
-    print(f"Compressed by llm_lingua2_small: {compressed_prompt_small}")
-    print(f"Compressed by llm_lingua2: {compressed_prompt_large}")
+    # print(f"Compressed by llm_lingua2_small: {compressed_prompt_small}")
+    # print(f"Compressed by llm_lingua2: {compressed_prompt_large}")
 else:
     print("The dataset must have a 'content' column and at least 7 rows.")
