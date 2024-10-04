@@ -2461,6 +2461,10 @@ class PromptCompressor:
                         token_map=token_map,
                         force_reserve_digit=force_reserve_digit,
                     )
+                    logging.info(f"4.3 (Merge tokens into words) completed in {time.time() - substep_start_time:.2f} seconds.")
+
+                    # 4.4: Convert token probabilities to word probabilities
+                    substep_start_time = time.time()
                     word_probs = self.__token_prob_to_word_prob(
                         valid_token_probs, convert_mode=token_to_word
                     )
