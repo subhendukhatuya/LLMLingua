@@ -1,6 +1,8 @@
 # Copyright (c) 2023 Microsoft
 # Licensed under The MIT License [see LICENSE for details]
 
+import time
+import logging
 import bisect
 import copy
 import json
@@ -32,6 +34,7 @@ from .utils import (
     seed_everything,
 )
 
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 class PromptCompressor:
     """
@@ -784,6 +787,10 @@ class PromptCompressor:
                 - "saving" (str): Estimated savings in GPT-4 token usage.
 
         """
+
+        start_time = time.time()
+        logging.info("Starting compression...")
+
         assert len(force_tokens) <= self.max_force_token
         token_map = {}
         for i, t in enumerate(force_tokens):
@@ -794,6 +801,9 @@ class PromptCompressor:
             if c in token_map:
                 chunk_end_tokens.append(token_map[c])
         chunk_end_tokens = set(chunk_end_tokens)
+
+        # Log the context processing step
+        logging.info("Processing context and setting token map.")
 
         if type(context) == str:
             context = [context]
@@ -814,7 +824,14 @@ class PromptCompressor:
                 self.__chunk_context(context[i], chunk_end_tokens=chunk_end_tokens)
             )
 
+        context_processed_time = time.time()
+        logging.info(f"Context processing completed in {context_processed_time - start_time:.2f} seconds.")
+        
+
         if use_context_level_filter:
+
+            logging.info("Starting context-level compression.")
+            filter_start_time = time.time()
             # want use_context_level_filter but do not specify any parameters in context level?
             # we will set context_level_rate = (rate + 1.0) / 2 if specify rate or target_token * 2 if specify target_token
             if (
@@ -893,6 +910,10 @@ class PromptCompressor:
             ratio = (
                 1 if n_compressed_token == 0 else n_original_token / n_compressed_token
             )
+
+            filter_end_time = time.time()
+            logging.info(f"Context-level compression completed in {filter_end_time - filter_start_time:.2f} seconds.")
+
             res = {
                 "compressed_prompt": "\n\n".join(compressed_context),
                 "compressed_prompt_list": compressed_context,
@@ -918,10 +939,15 @@ class PromptCompressor:
                     [f"{word}{label_sep}{label}" for word, label in zip(words, labels)]
                 )
                 res["fn_labeled_original_prompt"] = word_label_lines
+            logging.info(f"Total function execution time: {time.time() - start_time:.2f} seconds.")
             return res
 
         if target_token > 0:
             rate = min(target_token / n_original_token, 1.0)
+
+        logging.info("Starting token-level compression.")
+        token_start_time = time.time()
+
 
         if use_token_level_filter:
             compressed_context, word_list, word_label_list = self.__compress(
@@ -949,6 +975,11 @@ class PromptCompressor:
             n_compressed_token += self.get_token_length(c, use_oai_tokenizer=True)
         saving = (n_original_token - n_compressed_token) * 0.06 / 1000
         ratio = 1 if n_compressed_token == 0 else n_original_token / n_compressed_token
+        
+        token_end_time = time.time()
+        logging.info(f"Token-level compression completed in {token_end_time - token_start_time:.2f} seconds.")
+
+
         res = {
             "compressed_prompt": "\n\n".join(compressed_context),
             "compressed_prompt_list": compressed_context,
@@ -969,6 +1000,8 @@ class PromptCompressor:
                 [f"{word}{label_sep}{label}" for word, label in zip(words, labels)]
             )
             res["fn_labeled_original_prompt"] = word_label_lines
+
+        logging.info(f"Total function execution time: {time.time() - start_time:.2f} seconds.")
         return res
 
     def get_token_length(
@@ -2311,10 +2344,16 @@ class PromptCompressor:
         force_reserve_digit: bool = False,
         drop_consecutive: bool = False,
     ):
+        
+        total_start_time = time.time()
+        logging.info("Starting actual __compress function...")
+
         def split_string_to_words(input_string):
             pattern = r'\b\w+\b|[<>=/!@#$%^&*()?":{}|\\`~;_+-]'
             result = re.findall(pattern, input_string)
             return result
+    
+        step_start_time = time.time()  # Start time for this step
 
         if reduce_rate <= 0:
             words, word_labels = [], []
@@ -2332,31 +2371,60 @@ class PromptCompressor:
                 context_list[i] = "".join(chunk_list)
                 words.append(chunk_words)
                 word_labels.append(chunk_word_labels)
+
+            logging.info(f"Step 1 (No reduction case) completed in {time.time() - step_start_time:.2f} seconds.")
+            logging.info(f"Compression completed in {time.time() - total_start_time:.2f} seconds (no reduction).")
             return context_list, words, word_labels
 
+        step_start_time = time.time()  # Start time for chunking
+        logging.info("Chunking context list.")
         chunk_list = []
         for chunks in context_list:
             for c in chunks:
                 chunk_list.append(c)
 
+        logging.info(f"Step 2 (Chunking) completed in {time.time() - step_start_time:.2f} seconds.")
+
+
+        step_start_time = time.time()  # Start time for dataset creation
+        logging.info("Creating dataset.")
         dataset = TokenClfDataset(
             chunk_list, tokenizer=self.tokenizer, max_len=self.max_seq_len
         )
+        logging.info(f"Dataset creation completed in {time.time() - step_start_time:.2f} seconds.")
+
+        step_start_time = time.time()  # Start time for dataloader creation
+        logging.info("Creating dataloader.")
         dataloader = DataLoader(
             dataset, batch_size=self.max_batch_size, shuffle=False, drop_last=False
         )
+        logging.info(f"Dataloader creation completed in {time.time() - step_start_time:.2f} seconds.")
 
         compressed_chunk_list = []
         word_list = []
         word_label_list = []
+
+        step_start_time = time.time()  # Start time for model inference
+        logging.info("Starting model inference.")
         with torch.no_grad():
             for batch in dataloader:
                 ids = batch["ids"].to(self.device, dtype=torch.long)
                 mask = batch["mask"].to(self.device, dtype=torch.long) == 1
 
+                logging.info(f"Step 1 (Move inputs to device) completed in {time.time() - step_start_time:.2f} seconds.")
+                
+                step_start_time = time.time()
                 outputs = self.model(input_ids=ids, attention_mask=mask)
+                logging.info(f"Step 2 (Model forward pass) completed in {time.time() - step_start_time:.2f} seconds.")
+                
+                step_start_time = time.time()
+
                 loss, logits = outputs.loss, outputs.logits
                 probs = F.softmax(logits, dim=-1)
+                logging.info(f"Step 3 (Softmax computation) completed in {time.time() - step_start_time:.2f} seconds.")
+
+
+                step_start_time = time.time()
 
                 for j in range(ids.shape[0]):
                     chunk_probs = probs[j, :, 1]
@@ -2432,6 +2500,13 @@ class PromptCompressor:
                     word_list.append(words[:])
                     word_label_list.append(word_labels[:])
 
+                logging.info(f"Step 4 (Process batch results) completed in {time.time() - step_start_time:.2f} seconds.")
+                logging.info(f"Batch processed in {time.time() - batch_start_time:.2f} seconds.")
+
+        logging.info(f"Model inference completed in {time.time() - model_inference_start_time:.2f} seconds.")
+
+        step_start_time = time.time()  # Start time for reassembling
+
         compressed_context_list = []
         original_word_list = []
         original_word_label_list = []
@@ -2447,5 +2522,9 @@ class PromptCompressor:
                 original_word_list[-1].extend(word_list[prev_idx + i])
                 original_word_label_list[-1].extend(word_label_list[prev_idx + i])
             prev_idx = prev_idx + n_chunk
+
+        logging.info(f"Step 5 (Reassembling) completed in {time.time() - step_start_time:.2f} seconds.")
+
+        logging.info(f"__compress completed in {time.time() - total_start_time:.2f} seconds.")
 
         return compressed_context_list, original_word_list, original_word_label_list
