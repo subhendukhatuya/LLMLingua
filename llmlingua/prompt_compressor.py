@@ -2373,8 +2373,8 @@ class PromptCompressor:
                 words.append(chunk_words)
                 word_labels.append(chunk_word_labels)
 
-            logging.info(f"Step 1 (No reduction case) completed in {time.time() - step_start_time:.2f} seconds.")
-            logging.info(f"Compression completed in {time.time() - total_start_time:.2f} seconds (no reduction).")
+            logging.info(f"Step 1 (No reduction case) completed in {time.time() - step_start_time:.4f} seconds.")
+            logging.info(f"Compression completed in {time.time() - total_start_time:.4f} seconds (no reduction).")
             return context_list, words, word_labels
 
         step_start_time = time.time()  # Start time for chunking
@@ -2384,7 +2384,7 @@ class PromptCompressor:
             for c in chunks:
                 chunk_list.append(c)
 
-        logging.info(f"Step 2 (Chunking) completed in {time.time() - step_start_time:.2f} seconds.")
+        logging.info(f"Step 2 (Chunking) completed in {time.time() - step_start_time:.4f} seconds.")
 
 
         step_start_time = time.time()  # Start time for dataset creation
@@ -2392,14 +2392,14 @@ class PromptCompressor:
         dataset = TokenClfDataset(
             chunk_list, tokenizer=self.tokenizer, max_len=self.max_seq_len
         )
-        logging.info(f"Dataset creation completed in {time.time() - step_start_time:.2f} seconds.")
+        logging.info(f"Dataset creation completed in {time.time() - step_start_time:.4f} seconds.")
 
         step_start_time = time.time()  # Start time for dataloader creation
         logging.info("Creating dataloader.")
         dataloader = DataLoader(
             dataset, batch_size=self.max_batch_size, shuffle=False, drop_last=False
         )
-        logging.info(f"Dataloader creation completed in {time.time() - step_start_time:.2f} seconds.")
+        logging.info(f"Dataloader creation completed in {time.time() - step_start_time:.4f} seconds.")
 
         compressed_chunk_list = []
         word_list = []
@@ -2416,17 +2416,17 @@ class PromptCompressor:
                 ids = batch["ids"].to(self.device, dtype=torch.long)
                 mask = batch["mask"].to(self.device, dtype=torch.long) == 1
 
-                logging.info(f"Step 1 (Move inputs to device) completed in {time.time() - step_start_time:.2f} seconds.")
+                logging.info(f"Step 1 (Move inputs to device) completed in {time.time() - step_start_time:.4f} seconds.")
                 
                 step_start_time = time.time()
                 outputs = self.model(input_ids=ids, attention_mask=mask)
-                logging.info(f"Step 2 (Model forward pass) completed in {time.time() - step_start_time:.2f} seconds.")
+                logging.info(f"Step 2 (Model forward pass) completed in {time.time() - step_start_time:.4f} seconds.")
                 
                 step_start_time = time.time()
 
                 loss, logits = outputs.loss, outputs.logits
                 probs = F.softmax(logits, dim=-1)
-                logging.info(f"Step 3 (Softmax computation) completed in {time.time() - step_start_time:.2f} seconds.")
+                logging.info(f"Step 3 (Softmax computation) completed in {time.time() - step_start_time:.4f} seconds.")
 
 
                 step_start_time = time.time()
@@ -2439,10 +2439,10 @@ class PromptCompressor:
                     chunk_probs = probs[j, :, 1]
                     chunk_ids = ids[j]
                     chunk_mask = mask[j]
-
+                    logging.info("torch.masked_select starts")
                     active_probs = torch.masked_select(chunk_probs, chunk_mask)
                     active_ids = torch.masked_select(chunk_ids, chunk_mask)
-                    logging.info(f"4.1 (Extract token probabilities and mask) completed in {time.time() - substep_start_time:.2f} seconds.")
+                    logging.info(f"4.1 (Extract token probabilities and mask) completed in {time.time() - substep_start_time:.4f} seconds.")
 
                     substep_start_time = time.time()
                     tokens = self.tokenizer.convert_ids_to_tokens(
@@ -2450,7 +2450,7 @@ class PromptCompressor:
                     )
                     token_probs = [prob for prob in active_probs.cpu().numpy()]
 
-                    logging.info(f"4.2 (Convert token IDs to tokens) completed in {time.time() - substep_start_time:.2f} seconds.")
+                    logging.info(f"4.2 (Convert token IDs to tokens) completed in {time.time() - substep_start_time:.4f} seconds.")
 
                     # 4.3: Merge tokens into words
                     substep_start_time = time.time()
@@ -2461,7 +2461,7 @@ class PromptCompressor:
                         token_map=token_map,
                         force_reserve_digit=force_reserve_digit,
                     )
-                    logging.info(f"4.3 (Merge tokens into words) completed in {time.time() - substep_start_time:.2f} seconds.")
+                    logging.info(f"4.3 (Merge tokens into words) completed in {time.time() - substep_start_time:.4f} seconds.")
 
                     # 4.4: Convert token probabilities to word probabilities
                     substep_start_time = time.time()
@@ -2469,7 +2469,7 @@ class PromptCompressor:
                         valid_token_probs, convert_mode=token_to_word
                     )
 
-                    logging.info(f"4.4 (Convert token probs to word probs) completed in {time.time() - substep_start_time:.2f} seconds.")
+                    logging.info(f"4.4 (Convert token probs to word probs) completed in {time.time() - substep_start_time:.4f} seconds.")
 
                     # 4.5: Handle consecutive token drops if required
                     substep_start_time = time.time()
@@ -2488,7 +2488,7 @@ class PromptCompressor:
                                 is_token_between |= word_prob > threshold
 
 
-                    logging.info(f"4.5 (Handle consecutive token drops) completed in {time.time() - substep_start_time:.2f} seconds.")
+                    logging.info(f"4.5 (Handle consecutive token drops) completed in {time.time() - substep_start_time:.4f} seconds.")
 
                     # 4.6: Update word probabilities and filter words
                     substep_start_time = time.time()
@@ -2521,7 +2521,7 @@ class PromptCompressor:
                             word_labels.append(0)
                     keep_str = self.tokenizer.convert_tokens_to_string(keep_words)
                     
-                    logging.info(f"4.6 (Filter and update words based on probs) completed in {time.time() - substep_start_time:.2f} seconds.")
+                    logging.info(f"4.6 (Filter and update words based on probs) completed in {time.time() - substep_start_time:.4f} seconds.")
 
                     # 4.7: Clean special characters (specific to XLM-R models)
                     substep_start_time = time.time()
@@ -2529,17 +2529,17 @@ class PromptCompressor:
                         for i in range(len(words)):
                             words[i] = words[i].lstrip("▁")
 
-                    logging.info(f"4.7 (Clean special characters for XLM-R) completed in {time.time() - substep_start_time:.2f} seconds.")
+                    logging.info(f"4.7 (Clean special characters for XLM-R) completed in {time.time() - substep_start_time:.4f} seconds.")
                     compressed_chunk_list.append(keep_str)
                     word_list.append(words[:])
                     word_label_list.append(word_labels[:])
 
-                    logging.info(f"Word processing completed in {time.time() - word_start_time:.2f} seconds.")
+                    logging.info(f"Word processing completed in {time.time() - word_start_time:.4f} seconds.")
                 
-                logging.info(f"Step 4 (Process batch results) completed in {time.time() - step_start_time:.2f} seconds.")
+                logging.info(f"Step 4 (Process batch results) completed in {time.time() - step_start_time:.4f} seconds.")
                 logging.info(f"Batch processed in {time.time() - batch_start_time:.2f} seconds.")
 
-        logging.info(f"Model inference completed in {time.time() - model_inference_start_time:.2f} seconds.")
+        logging.info(f"Model inference completed in {time.time() - model_inference_start_time:.4f} seconds.")
 
         step_start_time = time.time()  # Start time for reassembling
 
@@ -2559,8 +2559,8 @@ class PromptCompressor:
                 original_word_label_list[-1].extend(word_label_list[prev_idx + i])
             prev_idx = prev_idx + n_chunk
 
-        logging.info(f"Step 5 (Reassembling) completed in {time.time() - step_start_time:.2f} seconds.")
+        logging.info(f"Step 5 (Reassembling) completed in {time.time() - step_start_time:.4f} seconds.")
 
-        logging.info(f"__compress completed in {time.time() - total_start_time:.2f} seconds.")
+        logging.info(f"__compress completed in {time.time() - total_start_time:.4f} seconds.")
 
         return compressed_context_list, original_word_list, original_word_label_list
